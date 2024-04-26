@@ -1,7 +1,7 @@
 # Lost and Found
 
 ## Overview
-This project aims to provide [brief description of the project].
+This project aims to provide Cornell students help with finding lost items.
 
 ## Setup
 1. Clone this repository.
@@ -10,7 +10,7 @@ This project aims to provide [brief description of the project].
 4. Run `python db.py` to initialize the database.
 5. Start the server by running `python app.py`.
 
-## Endpoints
+## Endpoints [TBD]
 - `/endpoint1`: [Description of what this endpoint does]
 - `/endpoint2`: [Description of what this endpoint does]
 - ...

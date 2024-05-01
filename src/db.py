@@ -12,6 +12,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
+    bio = db.Column(db.String,nullable=False)
+    username = db.Column(db.String,nullable = False)
     posts = db.relationship("Post", cascade="delete")
     comments = db.relationship("Comment", cascade="delete")
 

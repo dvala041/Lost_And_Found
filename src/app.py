@@ -33,15 +33,16 @@ def create_user():
     body = json.loads(request.data)
     name = body.get("name")
     email = body.get("email")
+    username = body.get("username")
 
-    if name is None or email is None:
+    if name is None or email is None or username:
         return failure_response("Body is missing field", 400)
     
-    new_user = User(name = name, email = email)
+    new_user = User(name = name, email = email,username = username)
     db.session.add(new_user)
     db.session.commit()
     
-    user = new_user.serialize()
+    user = new_user.simple_serialize()
 
     return success_response(user, 201)
 

@@ -38,6 +38,7 @@ class User(db.Model):
             "posts": [p.serialize() for p in self.posts],
             "comments": [c.serialize() for c in self.comments]
         }
+    
 
 
 #Post has a one to many relationship with user

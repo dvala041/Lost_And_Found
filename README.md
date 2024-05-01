@@ -20,5 +20,3 @@ This project aims to provide Cornell students help with finding lost items.
 - [David Valarezo]
 - [Nathnael Tefsaw]
 
-## License
-This project is licensed under the [Appdev]. See the LICENSE file for details.

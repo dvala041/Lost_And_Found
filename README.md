@@ -5,15 +5,11 @@ This project aims to provide Cornell students help with finding lost items.
 
 ## Setup
 1. Clone this repository.
-2. Install the required dependencies by running `pip install -r requirements.txt`.
-3. Set up your database configurations in `config.py`.
-4. Run `python db.py` to initialize the database.
-5. Start the server by running `python app.py`.
+2. cd into src
+3. Install the required dependencies by running `pip install -r requirements.txt`.
+4. Start the server by running `python3 app.py`.
 
-## Endpoints [TBD]
-- `/endpoint1`: [Description of what this endpoint does]
-- `/endpoint2`: [Description of what this endpoint does]
-- ...
+## Endpoints [SEE APP.PY]
 
 ## Technologies Used
 - Python
@@ -21,8 +17,8 @@ This project aims to provide Cornell students help with finding lost items.
 - SQLAlchemy
 
 ## Contributors
-- [Your Name]
-- [Any other contributors]
+- [David Valarezo]
+- [Nathnael Tefsaw]
 
 ## License
-This project is licensed under the [License Name]. See the LICENSE file for details.
+This project is licensed under the [Appdev]. See the LICENSE file for details.

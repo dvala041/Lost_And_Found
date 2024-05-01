@@ -97,7 +97,7 @@ def get_user(user_id):
 def get_users():
     """Get all Users"""
     users = [u.serialize() for u in User.query.all()]
-    return success_response({"users": users})
+    return success_response(users)
     
 #DELETE USER BY ID
 @app.route("/api/users/<int:user_id>/", methods=["DELETE"])
@@ -120,7 +120,7 @@ def delete_user(user_id):
 def get_comments():
     """Get all Comments"""
     comments = [c.serialize() for c in Comment.query.all()]
-    return success_response({"Comments": comments})
+    return success_response(comments)
 
 #GET COMMENT BY ID
 @app.route("/api/comments/<int:comment_id>/")
@@ -194,7 +194,7 @@ def update_comment(comment_id):
 def get_posts():
     """ Get all posts"""
     posts = [p.serialize() for p in Post.query.all()]
-    return success_response({"Posts": posts})
+    return success_response(posts)
 
 
 #GET A POST BY ITS ID
@@ -314,7 +314,7 @@ def login():
         return failure_response("User not found")
     
     hashed_password = hash_password(password)
-    
+
     ser_user = user.serialize()
     
     if not (hashed_password != ser_user.get("password")):

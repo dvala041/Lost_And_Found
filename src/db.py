@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -12,8 +13,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
-    bio = db.Column(db.String,nullable=False)
+    # bio = db.Column(db.String,nullable=False)
     username = db.Column(db.String,nullable = False)
+    password = db.Column(db.String, nullable = False)
     posts = db.relationship("Post", cascade="delete")
     comments = db.relationship("Comment", cascade="delete")
 
@@ -22,6 +24,8 @@ class User(db.Model):
         """Initializes the User Class"""
         self.name = kwargs.get("name")
         self.email = kwargs.get("email")
+        self.username = kwargs.get("username")
+        self.password = kwargs.get("password")
     
     def simple_serialize(self):
         """Serializes the User Class without posts and comments"""
@@ -29,6 +33,7 @@ class User(db.Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
+            "username": self.username
         }
     
     def serialize(self):
@@ -37,6 +42,7 @@ class User(db.Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
+            "username": self.username,
             "posts": [p.serialize() for p in self.posts],
             "comments": [c.serialize() for c in self.comments]
         }
@@ -52,7 +58,10 @@ class Post(db.Model):
     description = db.Column(db.String, nullable=False)
     category = db.Column(db.String, nullable=False)
     filename = db.Column(db.String(255), nullable=False)
+    location = db.Column(db.String, nullable = False)
+    time = db.Column(db.String, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    
 
     def __init__(self, **kwargs):
         """Initializes the Post Class"""
@@ -60,6 +69,8 @@ class Post(db.Model):
         self.description = kwargs.get("description")
         self.category = kwargs.get("category")
         self.filename = kwargs.get("filename")
+        self.location = kwargs.get("location")
+        self.time = kwargs.get("time")
         self.user_id = kwargs.get("user_id")
 
     def serialize(self):
@@ -70,6 +81,8 @@ class Post(db.Model):
             "description": self.description,
             "category": self.category,
             "filename": self.filename,
+            "location": self.location,
+            "time": self.time,
             "user_id": self.user_id
         }
     

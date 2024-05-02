@@ -1,4 +1,6 @@
 import json
+import hashlib
+from datetime import datetime
 
 from db import db, User, Post, Comment
 from flask import Flask, request
@@ -22,23 +24,34 @@ def success_response(data, code=200):
 def failure_response(message, code=404):
     return json.dumps({"error": message}), code
 
+def hash_password(password):
+    # Use SHA256 to hash the password
+    hasher = hashlib.sha256()
+    password_bytes = password.encode()
+    hasher.update(password_bytes)
+    password_hash = hasher.hexdigest()
+
+    return password_hash
+
 
 """USER ROUTES"""
 
 
-#CREATE USER
-@app.route("/api/users/", methods=["POST"])
+#CREATE USER; SIGN UP A USER
+@app.route("/api/signup/", methods=["POST"])
 def create_user():
     """Create a new user"""
     body = json.loads(request.data)
     name = body.get("name")
     email = body.get("email")
     username = body.get("username")
+    password = body.get("password")
 
-    if name is None or email is None or username:
+    if name is None or email is None or username is None or password is None:
         return failure_response("Body is missing field", 400)
     
-    new_user = User(name = name, email = email,username = username)
+    hashed_password = hash_password(password)
+    new_user = User(name = name, email = email,username = username, password = hashed_password)
     db.session.add(new_user)
     db.session.commit()
     
@@ -59,9 +72,11 @@ def update_user(user_id):
     body = json.loads(request.data)
     name = body.get("name", ser.get("name"))
     email = body.get("email", ser.get("email"))
+    username = body.get("username", ser.get("username"))
     
     user.name = name 
     user.email = email
+    user.username = username
     db.session.commit()
     return success_response(user.serialize())
     
@@ -105,7 +120,8 @@ def delete_user(user_id):
 def get_comments():
     """Get all Comments"""
     comments = [c.serialize() for c in Comment.query.all()]
-    return success_response( comments)
+    return success_response(comments)
+
 
 #GET COMMENT BY ID
 @app.route("/api/comments/<int:comment_id>/")
@@ -214,11 +230,13 @@ def create_post(user_id):
     description = body.get("description")
     category = body.get("category")
     filename = body.get("filename")
+    location = body.get("location")
 
-    if title is None or description is None or category is None or filename is None:
+    if title is None or description is None or category is None or filename is None or location is None:
         return failure_response("Body is missing fields", 400)
     
-    post = Post(title = title, description = description, category = category, filename = filename, user_id=user_id)
+    post = Post(title = title, description = description, category = category, filename = filename, 
+                user_id=user_id, location = location, time = datetime.now())
 
     db.session.add(post)
     user.posts.append(post)
@@ -277,7 +295,33 @@ def delete_post(post_id):
     return success_response(post.serialize())
     
     
+"""OTHER ENDPOINTS"""
 
+@app.route("/api/login/", methods = ["POST"])
+def login():
+    body = json.loads(request.data)
+    # name = body.get("name")
+    # email = body.get("email")
+    username = body.get("username")
+    password = body.get("password")
+    
+
+    if username is None or password is None: 
+        return failure_response("Missing body", 400)
+    
+    user = User.query.filter_by(username=username).first()
+
+    if user is None:
+        return failure_response("User not found")
+    
+    hashed_password = hash_password(password)
+
+    ser_user = user.serialize()
+    
+    if not (hashed_password != ser_user.get("password")):
+        return failure_response("Incorrect Password")
+    
+    return success_response(user.simple_serialize())
     
     
 

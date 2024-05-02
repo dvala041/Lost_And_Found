@@ -122,6 +122,7 @@ def get_comments():
     comments = [c.serialize() for c in Comment.query.all()]
     return success_response(comments)
 
+
 #GET COMMENT BY ID
 @app.route("/api/comments/<int:comment_id>/")
 def get_comment(comment_id):

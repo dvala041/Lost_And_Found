@@ -13,11 +13,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
-    # bio = db.Column(db.String,nullable=False)
+    bio = db.Column(db.String,nullable=False)
+    profile_img_url = db.Column(db.String,nullable=False)
     username = db.Column(db.String,nullable = False)
     password = db.Column(db.String, nullable = False)
     posts = db.relationship("Post", cascade="delete")
     comments = db.relationship("Comment", cascade="delete")
+
 
 
     def __init__(self, **kwargs):
@@ -26,6 +28,8 @@ class User(db.Model):
         self.email = kwargs.get("email")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
+        self.bio = ""
+        self.profile_img_url = ""
     
     def simple_serialize(self):
         """Serializes the User Class without posts and comments"""
@@ -33,7 +37,9 @@ class User(db.Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "username": self.username
+            "username": self.username,
+            "bio": self.bio,
+            "profile_img_url": self.profile_img_url
         }
     
     def serialize(self):

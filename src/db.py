@@ -110,3 +110,26 @@ class Comment(db.Model):
             "post_id": self.post_id,
             "user_id": self.user_id
         }
+    
+class Image(db.Model):
+    """Image Class"""
+    __tablename__  = "images"
+    id = db.Column(db.Integer, primary_key=True, autoincrement = True)
+    img = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    mimetype = db.Column(db.Text, nullable=False)
+
+    def __init__ (self, **kwargs):
+        """Initializes the Image class"""
+        self.img = kwargs.get("img")
+        self.name = kwargs.get("name")
+        self.mimetype = kwargs.get("mimetype")
+
+    def serialize(self):
+        """Serializes the Image class"""
+        return {
+            "id": self.id,
+            "img": self.img,
+            "name": self.name,
+            "mimetype": self.mimetype
+        }

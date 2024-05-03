@@ -321,7 +321,7 @@ def login():
     if not (hashed_password != ser_user.get("password")):
         return failure_response("Incorrect Password")
     
-    return success_response(user.simple_serialize())
+    return success_response(user.simple_serialize(), 201)
     
     
 

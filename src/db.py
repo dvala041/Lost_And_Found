@@ -49,6 +49,8 @@ class User(db.Model):
             "name": self.name,
             "email": self.email,
             "username": self.username,
+            "bio": self.bio,
+            "profile_img_url": self.profile_img_url,
             "posts": [p.serialize() for p in self.posts],
             "comments": [c.serialize() for c in self.comments]
         }

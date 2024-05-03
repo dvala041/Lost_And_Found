@@ -13,11 +13,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
-    # bio = db.Column(db.String,nullable=False)
+    bio = db.Column(db.String,nullable=False)
+    profile_img_url = db.Column(db.String,nullable=False)
     username = db.Column(db.String,nullable = False)
     password = db.Column(db.String, nullable = False)
     posts = db.relationship("Post", cascade="delete")
     comments = db.relationship("Comment", cascade="delete")
+
 
 
     def __init__(self, **kwargs):
@@ -26,6 +28,8 @@ class User(db.Model):
         self.email = kwargs.get("email")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
+        self.bio = ""
+        self.profile_img_url = ""
     
     def simple_serialize(self):
         """Serializes the User Class without posts and comments"""
@@ -33,7 +37,9 @@ class User(db.Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "username": self.username
+            "username": self.username,
+            "bio": self.bio,
+            "profile_img_url": self.profile_img_url
         }
     
     def serialize(self):
@@ -43,6 +49,8 @@ class User(db.Model):
             "name": self.name,
             "email": self.email,
             "username": self.username,
+            "bio": self.bio,
+            "profile_img_url": self.profile_img_url,
             "posts": [p.serialize() for p in self.posts],
             "comments": [c.serialize() for c in self.comments]
         }
@@ -109,4 +117,27 @@ class Comment(db.Model):
             "comment": self.comment,
             "post_id": self.post_id,
             "user_id": self.user_id
+        }
+    
+class Image(db.Model):
+    """Image Class"""
+    __tablename__  = "images"
+    id = db.Column(db.Integer, primary_key=True, autoincrement = True)
+    img = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    mimetype = db.Column(db.Text, nullable=False)
+
+    def __init__ (self, **kwargs):
+        """Initializes the Image class"""
+        self.img = kwargs.get("img")
+        self.name = kwargs.get("name")
+        self.mimetype = kwargs.get("mimetype")
+
+    def serialize(self):
+        """Serializes the Image class"""
+        return {
+            "id": self.id,
+            "img": self.img,
+            "name": self.name,
+            "mimetype": self.mimetype
         }

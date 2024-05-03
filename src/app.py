@@ -1,9 +1,10 @@
 import json
 import hashlib
 from datetime import datetime
+from werkzeug.utils import secure_filename 
 
-from db import db, User, Post, Comment
-from flask import Flask, request
+from db import db, User, Post, Comment, Image
+from flask import Flask, request, Response
 
 app = Flask(__name__)
 db_filename = "lost.db"
@@ -35,6 +36,24 @@ def hash_password(password):
 
 
 """USER ROUTES"""
+
+#GET ALL USERS
+@app.route("/api/users/")
+def get_users():
+    """Get all Users"""
+    users = [u.serialize() for u in User.query.all()]
+    return success_response(users)
+
+#GET USER BY ID
+@app.route("/api/users/<int:user_id>/")
+def get_user(user_id):
+    """Get a user given its id"""
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is None:
+        return failure_response("User not found")
+    
+    return success_response(user.serialize())
 @app.route("/")
 def base():
     return "hello"
@@ -70,36 +89,21 @@ def update_user(user_id):
     if user is None:
         return failure_response("User not found")
     
-    ser = user.serialize()
+    ser = user.simple_serialize()
     body = json.loads(request.data)
     name = body.get("name", ser.get("name"))
     email = body.get("email", ser.get("email"))
     username = body.get("username", ser.get("username"))
+    bio = body.get("bio", ser.get("bio"))
+    profile_img_url = body.get("profile_img_url", ser.get("profile_image_url"))
     
     user.name = name 
     user.email = email
     user.username = username
+    user.bio = bio
+    user.profile_img_url = profile_img_url
     db.session.commit()
     return success_response(user.serialize())
-    
-#GET USER BY ID
-@app.route("/api/users/<int:user_id>/")
-def get_user(user_id):
-    """Get a user given its id"""
-    user = User.query.filter_by(id=user_id).first()
-
-    if user is None:
-        return failure_response("User not found")
-    
-    return success_response(user.serialize())
-
-
-#GET ALL USERS
-@app.route("/api/users/")
-def get_users():
-    """Get all Users"""
-    users = [u.serialize() for u in User.query.all()]
-    return success_response(users)
     
 #DELETE USER BY ID
 @app.route("/api/users/<int:user_id>/", methods=["DELETE"])
@@ -323,12 +327,32 @@ def login():
     if not (hashed_password != ser_user.get("password")):
         return failure_response("Incorrect Password")
     
-    return success_response(user.simple_serialize(), 201)
+    return success_response(user.simple_serialize())
+
+#TESTING THIS ROUTE FOR STORING IMAGES
+@app.route("/api/upload/", methods=["POST"])
+def upload_image():
+    pic = request.files["pic"] #pic is the name of the file?
+
+    if not pic:
+        return failure_response("No image uploaded")
     
+    filename = secure_filename(pic.filename)
+    mimetype = pic.mimetype
+    img = Image(img=pic.read(), mimetype=mimetype, name=filename)
+    db.session.add(img)
+    db.session.commit()
+
+    return "Success!!!"
+
+@app.route("/api/upload/<int:image_id>/")
+def get_image(image_id):
+    img = Image.query.filter_by(id=image_id).first()
+
+    if img is None:
+        return failure_response("Image not found")
     
-
-
-
+    return Response(img.img, mimetype=img.mimetype)
     
 
 if __name__ == "__main__":

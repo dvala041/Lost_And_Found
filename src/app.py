@@ -41,7 +41,7 @@ def hash_password(password):
 @app.route("/api/users/")
 def get_users():
     """Get all Users"""
-    users = [u.serialize() for u in User.query.all()]
+    users = [u.simple_serialize() for u in User.query.all()]
     return success_response(users)
 
 #GET USER BY ID
@@ -53,7 +53,7 @@ def get_user(user_id):
     if user is None:
         return failure_response("User not found")
     
-    return success_response(user.serialize())
+    return success_response(user.simple_serialize())
 @app.route("/")
 def base():
     return "hello"
@@ -103,7 +103,7 @@ def update_user(user_id):
     user.bio = bio
     user.profile_img_url = profile_img_url
     db.session.commit()
-    return success_response(user.serialize())
+    return success_response(user.simple_serialize())
     
 #DELETE USER BY ID
 @app.route("/api/users/<int:user_id>/", methods=["DELETE"])
@@ -115,7 +115,7 @@ def delete_user(user_id):
         return failure_response("User not found")
     db.session.delete(user)
     db.session.commit()
-    return success_response(user.serialize())
+    return success_response(user.simple_serialize())
 
 
     

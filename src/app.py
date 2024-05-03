@@ -1,9 +1,10 @@
 import json
 import hashlib
 from datetime import datetime
+from werkzeug.utils import secure_filename 
 
-from db import db, User, Post, Comment
-from flask import Flask, request
+from db import db, User, Post, Comment, Image
+from flask import Flask, request, Response
 
 app = Flask(__name__)
 db_filename = "lost.db"
@@ -322,7 +323,33 @@ def login():
         return failure_response("Incorrect Password")
     
     return success_response(user.simple_serialize())
+
+#TESTING THIS ROUTE FOR STORING IMAGES
+@app.route("/api/upload/", methods=["POST"])
+def upload_image():
+    pic = request.files["pic"] #pic is the name of the file?
+
+    if not pic:
+        return failure_response("No image uploaded")
     
+    filename = secure_filename(pic.filename)
+    mimetype = pic.mimetype
+    img = Image(img=pic.read(), mimetype=mimetype, name=filename)
+    db.session.add(img)
+    db.session.commit()
+
+    return "Success!!!"
+
+@app.route("/api/upload/<int:image_id>/")
+def get_image(image_id):
+    img = Image.query.filter_by(id=image_id).first()
+
+    if img is None:
+        return failure_response("Image not found")
+    
+    return Response(img.img, mimetype=img.mimetype)
+    
+
     
 
 

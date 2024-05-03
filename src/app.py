@@ -35,7 +35,9 @@ def hash_password(password):
 
 
 """USER ROUTES"""
-
+@app.route("/")
+def base():
+    return "hello"
 
 #CREATE USER; SIGN UP A USER
 @app.route("/api/signup/", methods=["POST"])

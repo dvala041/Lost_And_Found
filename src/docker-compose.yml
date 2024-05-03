@@ -1,0 +1,6 @@
+version: "3"
+services:
+    demo:
+        image: nathnael2/lostandfound
+        ports:
+            - "80:8000"

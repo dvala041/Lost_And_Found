@@ -343,7 +343,7 @@ def upload_image():
     db.session.add(img)
     db.session.commit()
 
-    return success_response(filename,201)
+    return success_response({"filename":filename},201)
 
 @app.route("/api/upload/<int:image_id>/")
 def get_image(image_id):

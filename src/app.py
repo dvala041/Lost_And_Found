@@ -337,17 +337,23 @@ def upload_image():
     if not pic:
         return failure_response("No image uploaded")
     
+    image_id = db.session.query(Image).count() + 1
+    
     filename = secure_filename(pic.filename)
+    parts = filename.split('.')
+    new_filename = f"{parts[0]}_{image_id}.{parts[1]}"
+
+
     mimetype = pic.mimetype
-    img = Image(img=pic.read(), mimetype=mimetype, name=filename)
+    img = Image(img=pic.read(), mimetype=mimetype, name=new_filename)
     db.session.add(img)
     db.session.commit()
 
-    return success_response({"filename":filename},201)
+    return success_response({"filename": new_filename},201)
 
-@app.route("/api/upload/<int:image_id>/")
-def get_image(image_id):
-    img = Image.query.filter_by(id=image_id).first()
+@app.route("/api/upload/<string:image_name>/")
+def get_image(image_name):
+    img = Image.query.filter_by(name=image_name).first()
 
     if img is None:
         return failure_response("Image not found")

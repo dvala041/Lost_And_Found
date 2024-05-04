@@ -95,7 +95,7 @@ def update_user(user_id):
     email = body.get("email", ser.get("email"))
     username = body.get("username", ser.get("username"))
     bio = body.get("bio", ser.get("bio"))
-    profile_img_url = body.get("profile_img_url", ser.get("profile_image_url"))
+    profile_img_url = body.get("profile_img_url", ser.get("profile_img_url"))
     
     user.name = name 
     user.email = email

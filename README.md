@@ -45,3 +45,4 @@ This project aims to provide Cornell students help with finding lost items.
 - [David Valarezo]
 - [Nathnael Tefsaw]
 
+DEMO: https://youtu.be/DcUpOmtydV8?si=QONg57mPLGPwlQwb
